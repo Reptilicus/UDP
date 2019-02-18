@@ -20,7 +20,10 @@ public class Driver {
 
     public static boolean correctFileType(String extension){
         boolean flag = false;
+        System.out.println(extension);
         switch (extension) {
+        case "jpg": 
+        	flag = true;
         }
         return flag;
     }
@@ -76,7 +79,6 @@ public class Driver {
     }
 
     public static void main(String args[]) throws IOException {
-
         // Creating the socket object for carrying the data.
         DatagramSocket ds = new DatagramSocket();
         byte[] receiveData = new byte[1024];
@@ -97,11 +99,12 @@ public class Driver {
         // the byte array that holds the image data.
         byte[] buffer = outputStream.toByteArray();
 
-        // Uncomment next line to pull in ip address via cmd
-        // InetAddress ip = args[1];
-        
+        // Assume ip is localhost unless told otherwise
         InetAddress ip = InetAddress.getLocalHost();
-
+        if (args.length > 2) {
+        	ip = InetAddress.getByName(args[1]);
+        }
+        
         // Sending the data
         Driver.sendData(buffer, ds, ip);
         
