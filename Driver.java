@@ -51,7 +51,7 @@ public class Driver {
                         counter++;
                     }
 
-                    DatagramPacket buffPacket = new DatagramPacket(padded, padded.length, ip, 1234);
+                    DatagramPacket buffPacket = new DatagramPacket(padded, padded.length, ip, 9876);
                     ds.send(buffPacket);
                     System.out.println(
                             " Packet Number: " + packetCounter + "\t SO: " + startOffsetValue + "    \tEO: " + (i - 1));
@@ -63,7 +63,7 @@ public class Driver {
                 if (i % (buffer.length / 12) == 0 && i != 0) {
 
                     // Creating the datagramPacket for sending the data.
-                    DatagramPacket bufferPacket = new DatagramPacket(buffer, buffer.length, ip, 1234);
+                    DatagramPacket bufferPacket = new DatagramPacket(buffer, buffer.length, ip, 9876);
                     ds.send(bufferPacket);
                     buff = new byte[(buffer.length / 12) + 1];
                     counter = 0;
