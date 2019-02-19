@@ -20,7 +20,6 @@ public class Driver {
 
     public static boolean correctFileType(String extension){
         boolean flag = false;
-        System.out.println(extension);
         switch (extension) {
         case "jpg": 
         	flag = true;
@@ -34,7 +33,7 @@ public class Driver {
         return (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1);
     }
     
-    public static void sendData(byte[] buffer, DatagramSocket ds, InetAddress ip ) {
+    public static void sendData(byte[] buffer, DatagramSocket ds, InetAddress ip, int port ) {
 
         int startOffsetValue, packetCounter = 1;
         int counter = 0;
@@ -51,7 +50,7 @@ public class Driver {
                         counter++;
                     }
 
-                    DatagramPacket buffPacket = new DatagramPacket(padded, padded.length, ip, 9876);
+                    DatagramPacket buffPacket = new DatagramPacket(padded, padded.length, ip, port);
                     ds.send(buffPacket);
                     System.out.println(
                             " Packet Number: " + packetCounter + "\t SO: " + startOffsetValue + "    \tEO: " + (i - 1));
@@ -63,7 +62,7 @@ public class Driver {
                 if (i % (buffer.length / 12) == 0 && i != 0) {
 
                     // Creating the datagramPacket for sending the data.
-                    DatagramPacket bufferPacket = new DatagramPacket(buffer, buffer.length, ip, 9876);
+                    DatagramPacket bufferPacket = new DatagramPacket(buffer, buffer.length, ip, port);
                     ds.send(bufferPacket);
                     buff = new byte[(buffer.length / 12) + 1];
                     counter = 0;
@@ -72,13 +71,13 @@ public class Driver {
                     packetCounter++;
                 }
             }
-            ds.close();
         } catch(IOException e) {
             e.printStackTrace();
         }
     }
 
     public static void main(String args[]) throws IOException {
+    	int port = 9876;
         // Creating the socket object for carrying the data.
         DatagramSocket ds = new DatagramSocket();
         byte[] receiveData = new byte[1024];
@@ -92,6 +91,7 @@ public class Driver {
             System.out.println("Incorrect file type. Please double check path and try again.");
             System.exit(0);
         }
+        
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ImageIO.write(img, fileExtension, outputStream);
         outputStream.flush();
@@ -106,9 +106,10 @@ public class Driver {
         }
         
         // Sending the data
-        Driver.sendData(buffer, ds, ip);
+        Driver.sendData(buffer, ds, ip, port);
         
         // Receive data
         ds.receive(receivePacket);
+        ds.close();
     }
 }
